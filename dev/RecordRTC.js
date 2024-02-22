@@ -36,7 +36,7 @@ function RecordRTC(mediaStream, config) {
 
     function startRecording(config2) {
         if (!config.disableLogs) {
-            console.log('[screen-recorder-client][recordrtc][RecordRTC] RecordRTC version: ' + self.version);
+            window.recordRtc.logger.log('[screen-recorder-client][recordrtc][RecordRTC] RecordRTC version: ' + self.version);
         }
 
         if (!!config2) {
@@ -46,7 +46,7 @@ function RecordRTC(mediaStream, config) {
         }
 
         if (!config.disableLogs) {
-            console.log('[screen-recorder-client][recordrtc][RecordRTC] started recording ' + config.type + ' stream.');
+            window.recordRtc.logger.log('[screen-recorder-client][recordrtc][RecordRTC] started recording ' + config.type + ' stream.');
         }
 
         if (mediaRecorder) {
@@ -86,7 +86,7 @@ function RecordRTC(mediaStream, config) {
         setState('recording');
 
         if (!config.disableLogs) {
-            console.log('[screen-recorder-client][recordrtc][RecordRTC] Initialized recorderType: ' + mediaRecorder.constructor.name + ' for output-type: ' + config.type);
+            window.recordRtc.logger.log('[screen-recorder-client][recordrtc][RecordRTC] Initialized recorderType: ' + mediaRecorder.constructor.name + ' for output-type: ' + config.type);
         }
     }
 
@@ -112,7 +112,7 @@ function RecordRTC(mediaStream, config) {
         }
 
         if (!config.disableLogs) {
-            console.log('[screen-recorder-client][recordrtc][RecordRTC] Stopped recording ' + config.type + ' stream.');
+            window.recordRtc.logger.log('[screen-recorder-client][recordrtc][RecordRTC] Stopped recording ' + config.type + ' stream.');
         }
 
         if (config.type !== 'gif') {
@@ -153,7 +153,7 @@ function RecordRTC(mediaStream, config) {
             }
 
             if (blob && !config.disableLogs) {
-                console.log('[screen-recorder-client][recordrtc][RecordRTC] ' + blob.type + '->' + bytesToSize(blob.size));
+                window.recordRtc.logger.log('[screen-recorder-client][recordrtc][RecordRTC] ' + blob.type + '->' + bytesToSize(blob.size));
             }
 
             if (callback) {
@@ -200,7 +200,7 @@ function RecordRTC(mediaStream, config) {
         mediaRecorder.pause();
 
         if (!config.disableLogs) {
-            console.log('[screen-recorder-client][recordrtc][RecordRTC] Paused recording.');
+            window.recordRtc.logger.log('[screen-recorder-client][recordrtc][RecordRTC] Paused recording.');
         }
     }
 
@@ -212,7 +212,7 @@ function RecordRTC(mediaStream, config) {
 
         if (self.state !== 'paused') {
             if (!config.disableLogs) {
-                console.warn('[screen-recorder-client][recordrtc][RecordRTC] Unable to resume the recording. Recording state: ' + self.state);
+                window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][RecordRTC] Unable to resume the recording. Recording state: ' + self.state);
             }
             return;
         }
@@ -223,7 +223,7 @@ function RecordRTC(mediaStream, config) {
         mediaRecorder.resume();
 
         if (!config.disableLogs) {
-            console.log('[screen-recorder-client][recordrtc][RecordRTC] Resumed recording.');
+            window.recordRtc.logger.log('[screen-recorder-client][recordrtc][RecordRTC] Resumed recording.');
         }
     }
 
@@ -450,7 +450,7 @@ function RecordRTC(mediaStream, config) {
             mediaRecorder.clearRecordedData();
 
             if (!config.disableLogs) {
-                console.log('[screen-recorder-client][recordrtc][RecordRTC] Cleared old recorded data.');
+                window.recordRtc.logger.log('[screen-recorder-client][recordrtc][RecordRTC] Cleared old recorded data.');
             }
         },
 
@@ -696,7 +696,7 @@ function RecordRTC(mediaStream, config) {
          */
         onStateChanged: function(state) {
             if (!config.disableLogs) {
-                console.log('[screen-recorder-client][recordrtc][RecordRTC] Recorder state changed: ' + state);
+                window.recordRtc.logger.log('[screen-recorder-client][recordrtc][RecordRTC] Recorder state changed: ' + state);
             }
         },
 
@@ -754,7 +754,7 @@ function RecordRTC(mediaStream, config) {
             config.disableLogs = disableLogsCache;
 
             if (!config.disableLogs) {
-                console.log('[screen-recorder-client][recordrtc][RecordRTC] RecordRTC is destroyed.');
+                window.recordRtc.logger.log('[screen-recorder-client][recordrtc][RecordRTC] RecordRTC is destroyed.');
             }
         },
 

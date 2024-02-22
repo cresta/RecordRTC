@@ -76,7 +76,7 @@ function GetRecorderType(mediaStream, config) {
     }
 
     if (!config.disableLogs && !!recorder && !!recorder.name) {
-        console.log('[screen-recorder-client][recordrtc][GetRecorderType] Using recorderType: ' + (recorder.name || recorder.constructor.name));
+        window.recordRtc.logger.log('[screen-recorder-client][recordrtc][GetRecorderType] Using recorderType: ' + (recorder.name || recorder.constructor.name));
     }
 
     if (!recorder && isSafari) {

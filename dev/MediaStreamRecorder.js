@@ -103,7 +103,7 @@ function MediaStreamRecorder(mediaStream, config) {
         var recorderHints = config;
 
         if (!config.disableLogs) {
-            console.log('[screen-recorder-client][recordrtc][MediaStreamRecorder] Passing following config over MediaRecorder API: ' + recorderHints);
+            window.recordRtc.logger.log('[screen-recorder-client][recordrtc][MediaStreamRecorder] Passing following config over MediaRecorder API: ' + recorderHints);
         }
 
         if (mediaRecorder) {
@@ -478,7 +478,7 @@ function MediaStreamRecorder(mediaStream, config) {
 
         if (isMediaStreamActive() === false) {
             if (!config.disableLogs) {
-                console.log('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaStream seems stopped.');
+                window.recordRtc.logger.log('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaStream seems stopped.');
             }
             self.stop();
             return;
