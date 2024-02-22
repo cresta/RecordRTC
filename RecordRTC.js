@@ -1,9 +1,9 @@
 'use strict';
 
-// Last time updated: 2024-02-22 3:22:23 AM UTC
+// Last time updated: 2024-02-22 7:46:31 PM UTC
 
 // ________________
-// RecordRTC v5.6.7
+// RecordRTC v5.6.8
 
 // Open-Sourced: https://github.com/muaz-khan/RecordRTC
 
@@ -179,7 +179,7 @@ function RecordRTC(mediaStream, config) {
         }
 
         if (self.state !== 'recording' && !config.disableLogs) {
-            console.warn('[screen-recorder-client][recordrtc][RecordRTC] Recording state should be: "recording", however current state is: ' + self.state);
+            window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][RecordRTC] Recording state should be: "recording", however current state is: ' + self.state);
         }
 
         if (!config.disableLogs) {
@@ -261,7 +261,7 @@ function RecordRTC(mediaStream, config) {
 
         if (self.state !== 'recording') {
             if (!config.disableLogs) {
-                console.warn('[screen-recorder-client][recordrtc][RecordRTC] Unable to pause the recording. Recording state: ' + self.state);
+                window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][RecordRTC] Unable to pause the recording. Recording state: ' + self.state);
             }
             return;
         }
@@ -311,7 +311,7 @@ function RecordRTC(mediaStream, config) {
 
         if (!blob) {
             if (!config.disableLogs) {
-                console.warn('[screen-recorder-client][recordrtc][RecordRTC] Blob encoder did not finish its job yet.');
+                window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][RecordRTC] Blob encoder did not finish its job yet.');
             }
 
             setTimeout(function() {
@@ -398,7 +398,7 @@ function RecordRTC(mediaStream, config) {
             return;
         }
 
-        console.warn('[screen-recorder-client][recordrtc][RecordRTC] ' + WARNING);
+        window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][RecordRTC] ' + WARNING);
     }
 
     var mediaRecorder;
@@ -743,7 +743,7 @@ function RecordRTC(mediaStream, config) {
          */
         reset: function() {
             if (self.state === 'recording' && !config.disableLogs) {
-                console.warn('[screen-recorder-client][recordrtc][RecordRTC] Stop an active recorder.');
+                window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][RecordRTC] Stop an active recorder.');
             }
 
             if (mediaRecorder && typeof mediaRecorder.clearRecordedData === 'function') {
@@ -838,7 +838,7 @@ function RecordRTC(mediaStream, config) {
          * @example
          * alert(recorder.version);
          */
-        version: '5.6.7'
+        version: '5.6.8'
     };
 
     if (!this) {
@@ -856,7 +856,7 @@ function RecordRTC(mediaStream, config) {
     return returnObject;
 }
 
-RecordRTC.version = '5.6.7';
+RecordRTC.version = '5.6.8';
 
 if (typeof module !== 'undefined' /* && !!module.exports*/ ) {
     module.exports = RecordRTC;
@@ -2177,7 +2177,7 @@ function MediaStreamRecorder(mediaStream, config) {
         if (typeof MediaRecorder.isTypeSupported === 'function' && recorderHints.mimeType) {
             if (!MediaRecorder.isTypeSupported(recorderHints.mimeType)) {
                 if (!config.disableLogs) {
-                    console.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder API seems unable to record mimeType: ' + recorderHints.mimeType);
+                    window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder API seems unable to record mimeType: ' + recorderHints.mimeType);
                 }
 
                 recorderHints.mimeType = config.type === 'audio' ? 'audio/webm' : 'video/webm';
@@ -2198,12 +2198,14 @@ function MediaStreamRecorder(mediaStream, config) {
         // old hack?
         if (recorderHints.mimeType && !MediaRecorder.isTypeSupported && 'canRecordMimeType' in mediaRecorder && mediaRecorder.canRecordMimeType(recorderHints.mimeType) === false) {
             if (!config.disableLogs) {
-                console.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder API seems unable to record mimeType: ' + recorderHints.mimeType);
+                window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder API seems unable to record mimeType: ' + recorderHints.mimeType);
             }
         }
 
         // Dispatching OnDataAvailable Handler
         mediaRecorder.ondataavailable = function(e) {
+            window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] ondatavailable num bytes: ' + e.data.size);
+
             if (e.data) {
                 allStates.push('ondataavailable: ' + bytesToSize(e.data.size));
             }
@@ -2276,24 +2278,24 @@ function MediaStreamRecorder(mediaStream, config) {
             if (!config.disableLogs) {
                 // via: https://w3c.github.io/mediacapture-record/MediaRecorder.html#exception-summary
                 if (error.name.toString().toLowerCase().indexOf('invalidstate') !== -1) {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The MediaRecorder is not in a state in which the proposed operation is allowed to be executed: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The MediaRecorder is not in a state in which the proposed operation is allowed to be executed: ' + error);
                 } else if (error.name.toString().toLowerCase().indexOf('notsupported') !== -1) {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MIME type (' + recorderHints.mimeType + ') is not supported: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MIME type (' + recorderHints.mimeType + ') is not supported: ' + error);
                 } else if (error.name.toString().toLowerCase().indexOf('security') !== -1) {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder security error: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder security error: ' + error);
                 }
 
                 // older code below
                 else if (error.name === 'OutOfMemory') {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The UA has exhaused the available memory. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The UA has exhaused the available memory. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
                 } else if (error.name === 'IllegalStreamModification') {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] A modification to the stream has occurred that makes it impossible to continue recording. An example would be the addition of a Track while recording is occurring. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] A modification to the stream has occurred that makes it impossible to continue recording. An example would be the addition of a Track while recording is occurring. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
                 } else if (error.name === 'OtherRecordingError') {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] Used for an fatal error other than those listed above. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] Used for an fatal error other than those listed above. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
                 } else if (error.name === 'GenericError') {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The UA cannot provide the codec or recording option that has been requested: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The UA cannot provide the codec or recording option that has been requested: ' + error);
                 } else {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder Error: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder Error: ' + error);
                 }
             }
 
@@ -4402,7 +4404,7 @@ var Whammy = (function() {
 
         webWorker.onmessage = function(event) {
             if (event.data.error) {
-                console.error('[screen-recorder-client][recordrtc][Whammy] ' + event.data.error);
+                window.recordRtc.logger.error('[screen-recorder-client][recordrtc][Whammy] ' + event.data.error);
                 return;
             }
             callback(event.data);
@@ -4472,7 +4474,7 @@ var DiskStorage = {
         var self = this;
 
         if (typeof indexedDB === 'undefined' || typeof indexedDB.open === 'undefined') {
-            console.error('[screen-recorder-client][recordrtc][DiskStorage] IndexedDB API are not available in this browser.');
+            window.recordRtc.error('[screen-recorder-client][recordrtc][DiskStorage] IndexedDB API are not available in this browser.');
             return;
         }
 
@@ -4587,7 +4589,7 @@ var DiskStorage = {
      * };
      */
     onError: function(error) {
-        console.error('[screen-recorder-client][recordrtc][DiskStorage] ' + JSON.stringify(error, null, '\t'));
+        window.recordRtc.error('[screen-recorder-client][recordrtc][DiskStorage] ' + JSON.stringify(error, null, '\t'));
     },
 
     /**
@@ -5263,7 +5265,7 @@ function MultiStreamsMixer(arrayOfMediaStreams, elementClass) {
         } else if ('mozCaptureStream' in canvas) {
             capturedStream = canvas.mozCaptureStream();
         } else if (!self.disableLogs) {
-            console.error('[screen-recorder-client][recordrtc][MultiStreamsMixer] Upgrade to latest Chrome or otherwise enable this flag: chrome://flags/#enable-experimental-web-platform-features');
+            window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MultiStreamsMixer] Upgrade to latest Chrome or otherwise enable this flag: chrome://flags/#enable-experimental-web-platform-features');
         }
 
         var videoStream = new MediaStream();
@@ -5982,7 +5984,7 @@ function RecordRTCPromisesHandler(mediaStream, options) {
      * @example
      * alert(recorder.version);
      */
-    this.version = '5.6.7';
+    this.version = '5.6.8';
 }
 
 if (typeof RecordRTC !== 'undefined') {
@@ -6014,7 +6016,7 @@ function WebAssemblyRecorder(stream, config) {
 
     if (typeof ReadableStream === 'undefined' || typeof WritableStream === 'undefined') {
         // because it fixes readable/writable streams issues
-        console.error('[screen-recorder-client][recordrtc][WebAssemblyRecorder] Following polyfill is strongly recommended: https://unpkg.com/@mattiasbuelens/web-streams-polyfill/dist/polyfill.min.js');
+        window.recordRtc.logger.error('[screen-recorder-client][recordrtc][WebAssemblyRecorder] Following polyfill is strongly recommended: https://unpkg.com/@mattiasbuelens/web-streams-polyfill/dist/polyfill.min.js');
     }
 
     config = config || {};
@@ -6103,7 +6105,7 @@ function WebAssemblyRecorder(stream, config) {
         }
 
         if (!config.workerPath) {
-            console.error('[screen-recorder-client][recordrtc][WebAssemblyRecorder] workerPath parameter is missing.');
+            window.recordRtc.logger.error('[screen-recorder-client][recordrtc][WebAssemblyRecorder] workerPath parameter is missing.');
         }
 
         worker = new Worker(config.workerPath);
@@ -6122,7 +6124,7 @@ function WebAssemblyRecorder(stream, config) {
                 cameraStream().pipeTo(new WritableStream({
                     write: function(image) {
                         if (finished) {
-                            console.error('[screen-recorder-client][recordrtc][WebAssemblyRecorder] Got image, but recorder is finished!');
+                            window.recordRtc.logger.error('[screen-recorder-client][recordrtc][WebAssemblyRecorder] Got image, but recorder is finished!');
                             return;
                         }
 
