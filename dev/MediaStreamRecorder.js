@@ -146,7 +146,7 @@ function MediaStreamRecorder(mediaStream, config) {
 
         // Dispatching OnDataAvailable Handler
         mediaRecorder.ondataavailable = function(e) {
-            window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] ondatavailable num bytes: ' + e.data.size);
+            window.recordRtc.logger.log('[screen-recorder-client][recordrtc][MediaStreamRecorder] ondatavailable num bytes: ' + e.data.size);
 
             if (e.data) {
                 allStates.push('ondataavailable: ' + bytesToSize(e.data.size));
