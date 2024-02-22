@@ -1,9 +1,9 @@
 'use strict';
 
-// Last time updated: 2024-02-22 7:46:31 PM UTC
+// Last time updated: 2024-02-22 7:48:42 PM UTC
 
 // ________________
-// RecordRTC v5.6.8
+// RecordRTC v5.6.9
 
 // Open-Sourced: https://github.com/muaz-khan/RecordRTC
 
@@ -838,7 +838,7 @@ function RecordRTC(mediaStream, config) {
          * @example
          * alert(recorder.version);
          */
-        version: '5.6.8'
+        version: '5.6.9'
     };
 
     if (!this) {
@@ -856,7 +856,7 @@ function RecordRTC(mediaStream, config) {
     return returnObject;
 }
 
-RecordRTC.version = '5.6.8';
+RecordRTC.version = '5.6.9';
 
 if (typeof module !== 'undefined' /* && !!module.exports*/ ) {
     module.exports = RecordRTC;
@@ -2204,7 +2204,7 @@ function MediaStreamRecorder(mediaStream, config) {
 
         // Dispatching OnDataAvailable Handler
         mediaRecorder.ondataavailable = function(e) {
-            window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] ondatavailable num bytes: ' + e.data.size);
+            window.recordRtc.logger.log('[screen-recorder-client][recordrtc][MediaStreamRecorder] ondatavailable num bytes: ' + e.data.size);
 
             if (e.data) {
                 allStates.push('ondataavailable: ' + bytesToSize(e.data.size));
@@ -5984,7 +5984,7 @@ function RecordRTCPromisesHandler(mediaStream, options) {
      * @example
      * alert(recorder.version);
      */
-    this.version = '5.6.8';
+    this.version = '5.6.9';
 }
 
 if (typeof RecordRTC !== 'undefined') {
