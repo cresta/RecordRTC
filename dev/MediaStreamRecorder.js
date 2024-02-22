@@ -119,7 +119,7 @@ function MediaStreamRecorder(mediaStream, config) {
         if (typeof MediaRecorder.isTypeSupported === 'function' && recorderHints.mimeType) {
             if (!MediaRecorder.isTypeSupported(recorderHints.mimeType)) {
                 if (!config.disableLogs) {
-                    console.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder API seems unable to record mimeType: ' + recorderHints.mimeType);
+                    window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder API seems unable to record mimeType: ' + recorderHints.mimeType);
                 }
 
                 recorderHints.mimeType = config.type === 'audio' ? 'audio/webm' : 'video/webm';
@@ -140,12 +140,14 @@ function MediaStreamRecorder(mediaStream, config) {
         // old hack?
         if (recorderHints.mimeType && !MediaRecorder.isTypeSupported && 'canRecordMimeType' in mediaRecorder && mediaRecorder.canRecordMimeType(recorderHints.mimeType) === false) {
             if (!config.disableLogs) {
-                console.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder API seems unable to record mimeType: ' + recorderHints.mimeType);
+                window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder API seems unable to record mimeType: ' + recorderHints.mimeType);
             }
         }
 
         // Dispatching OnDataAvailable Handler
         mediaRecorder.ondataavailable = function(e) {
+            window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][MediaStreamRecorder] ondatavailable num bytes: ' + e.data.size);
+
             if (e.data) {
                 allStates.push('ondataavailable: ' + bytesToSize(e.data.size));
             }
@@ -218,24 +220,24 @@ function MediaStreamRecorder(mediaStream, config) {
             if (!config.disableLogs) {
                 // via: https://w3c.github.io/mediacapture-record/MediaRecorder.html#exception-summary
                 if (error.name.toString().toLowerCase().indexOf('invalidstate') !== -1) {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The MediaRecorder is not in a state in which the proposed operation is allowed to be executed: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The MediaRecorder is not in a state in which the proposed operation is allowed to be executed: ' + error);
                 } else if (error.name.toString().toLowerCase().indexOf('notsupported') !== -1) {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MIME type (' + recorderHints.mimeType + ') is not supported: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MIME type (' + recorderHints.mimeType + ') is not supported: ' + error);
                 } else if (error.name.toString().toLowerCase().indexOf('security') !== -1) {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder security error: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder security error: ' + error);
                 }
 
                 // older code below
                 else if (error.name === 'OutOfMemory') {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The UA has exhaused the available memory. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The UA has exhaused the available memory. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
                 } else if (error.name === 'IllegalStreamModification') {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] A modification to the stream has occurred that makes it impossible to continue recording. An example would be the addition of a Track while recording is occurring. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] A modification to the stream has occurred that makes it impossible to continue recording. An example would be the addition of a Track while recording is occurring. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
                 } else if (error.name === 'OtherRecordingError') {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] Used for an fatal error other than those listed above. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] Used for an fatal error other than those listed above. User agents SHOULD provide as much additional information as possible in the message attribute: ' + error);
                 } else if (error.name === 'GenericError') {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The UA cannot provide the codec or recording option that has been requested: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] The UA cannot provide the codec or recording option that has been requested: ' + error);
                 } else {
-                    console.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder Error: ' + error);
+                    window.recordRtc.logger.error('[screen-recorder-client][recordrtc][MediaStreamRecorder] MediaRecorder Error: ' + error);
                 }
             }
 

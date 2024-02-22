@@ -108,7 +108,7 @@ function RecordRTC(mediaStream, config) {
         }
 
         if (self.state !== 'recording' && !config.disableLogs) {
-            console.warn('[screen-recorder-client][recordrtc][RecordRTC] Recording state should be: "recording", however current state is: ' + self.state);
+            window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][RecordRTC] Recording state should be: "recording", however current state is: ' + self.state);
         }
 
         if (!config.disableLogs) {
@@ -190,7 +190,7 @@ function RecordRTC(mediaStream, config) {
 
         if (self.state !== 'recording') {
             if (!config.disableLogs) {
-                console.warn('[screen-recorder-client][recordrtc][RecordRTC] Unable to pause the recording. Recording state: ' + self.state);
+                window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][RecordRTC] Unable to pause the recording. Recording state: ' + self.state);
             }
             return;
         }
@@ -240,7 +240,7 @@ function RecordRTC(mediaStream, config) {
 
         if (!blob) {
             if (!config.disableLogs) {
-                console.warn('[screen-recorder-client][recordrtc][RecordRTC] Blob encoder did not finish its job yet.');
+                window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][RecordRTC] Blob encoder did not finish its job yet.');
             }
 
             setTimeout(function() {
@@ -327,7 +327,7 @@ function RecordRTC(mediaStream, config) {
             return;
         }
 
-        console.warn('[screen-recorder-client][recordrtc][RecordRTC] ' + WARNING);
+        window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][RecordRTC] ' + WARNING);
     }
 
     var mediaRecorder;
@@ -672,7 +672,7 @@ function RecordRTC(mediaStream, config) {
          */
         reset: function() {
             if (self.state === 'recording' && !config.disableLogs) {
-                console.warn('[screen-recorder-client][recordrtc][RecordRTC] Stop an active recorder.');
+                window.recordRtc.logger.warn('[screen-recorder-client][recordrtc][RecordRTC] Stop an active recorder.');
             }
 
             if (mediaRecorder && typeof mediaRecorder.clearRecordedData === 'function') {
