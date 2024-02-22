@@ -103,7 +103,7 @@ function MediaStreamRecorder(mediaStream, config) {
         var recorderHints = config;
 
         if (!config.disableLogs) {
-            window.recordRtc.logger.log('[screen-recorder-client][recordrtc][MediaStreamRecorder] Passing following config over MediaRecorder API: ' + recorderHints);
+            window.recordRtc.logger.log('[screen-recorder-client][recordrtc][MediaStreamRecorder] Passing following config over MediaRecorder API: ' + JSON.stringify(recorderHints));
         }
 
         if (mediaRecorder) {
